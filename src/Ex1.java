@@ -60,9 +60,16 @@ public class Ex1 {
 		int lx = xx.length;
 		int ly = yy.length;
 		if(xx!=null && yy!=null && lx==ly && lx>1 && lx<4) {
-		/** add you code below
-
-		/////////////////// */
+		/// add you code below
+         /// for 2 points
+        if(lx == 2){
+            ans = new double[2];
+            ans[0] = (yy[1] - yy[0])/(xx[1] - xx[0]);
+            ans[1] =  yy[0] - xx[0]*ans[0];
+            return ans;
+        }
+/// /////// need to complete for 3 points
+		////////////////////
 		}
 		return ans;
 	}
