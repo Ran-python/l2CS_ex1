@@ -64,11 +64,34 @@ public class Ex1 {
          /// for 2 points
         if(lx == 2){
             ans = new double[2];
-            ans[0] = (yy[1] - yy[0])/(xx[1] - xx[0]);
-            ans[1] =  yy[0] - xx[0]*ans[0];
+            ans[1] = (yy[1] - yy[0])/(xx[1] - xx[0]);
+            ans[0] =  yy[0] - xx[0]*ans[1];
             return ans;
         }
-/// /////// need to complete for 3 points
+        /// /// for 3 points
+        if (lx==3){
+            ans=new double[3];
+
+            double x1 = xx[0], y1 = yy[0];
+            double x2 = xx[1], y2 = yy[1];
+            double x3 = xx[2], y3 = yy[2];
+
+            double denom = (x1 - x2) * (x1 - x3) * (x2 - x3);
+
+            double A = (x3 * (y2 - y1) + x2 * (y1 - y3) + x1 * (y3 - y2)) / denom;
+            double B = (x3 * x3 * (y1 - y2) +
+                    x2 * x2 * (y3 - y1) +
+                    x1 * x1 * (y2 - y3)) / denom;
+            double C = (x2 * x3 * (x2 - x3) * y1 +
+                    x3 * x1 * (x3 - x1) * y2 +
+                    x1 * x2 * (x1 - x2) * y3) / denom;
+
+            ans[2] = A;
+            ans[1] = B;
+            ans[0] = C;
+
+            return ans;
+        }
 		////////////////////
 		}
 		return ans;
@@ -81,9 +104,34 @@ public class Ex1 {
 	 */
 	public static boolean equals(double[] p1, double[] p2) {
 		boolean ans = true;
-        /** add you code below
+        /// add you code below
+        if (p1 == null || p2 == null) {
+            return false;
+        }
+        int len1 = p1.length - 1;
+        int len2 = p2.length - 1;
+        int n = Math.max(len1 ,len2);
+        for (int i=0; i<=n ;i++) {
+            double x = i;
 
-         /////////////////// */
+            double v1 = 0;
+            for (int j = 0; j < p1.length; j++) {
+                v1 += p1[j] * Math.pow(x, j);
+            }
+
+            double v2 = 0;
+            for (int j = 0; j < p2.length; j++) {
+                v2 += p2[j] * Math.pow(x, j);
+            }
+
+            if (Math.abs(v1 - v2) > EPS) {
+                ans= false;
+                break;
+
+            }
+        }
+
+         ////////////////////
 		return ans;
 	}
 
@@ -97,9 +145,28 @@ public class Ex1 {
 		String ans = "";
 		if(poly.length==0) {ans="0";}
 		else {
-            /** add you code below
+            //// add you code below
+            int len = poly.length-1;
+            for (int i=len; i>=0; i--){
+                if (poly[i] != 0){
+                    /// // handling for signs
+                    if (ans.length() > 0 && poly[i] > 0) {
+                        ans += " + ";
+                    } else if (poly[i] < 0) {
+                        ans += " ";
+                    }
+                    /// / handling for nums
+                    if (i == 0) {
+                        ans += poly[i];
+                    } else if (i == 1) {
+                        ans += poly[i] + "x";
+                    } else {
+                        ans += poly[i] + "x^" + i;
+                    }
+                }
 
-             /////////////////// */
+            }
+            ////////////////////
 		}
 		return ans;
 	}
@@ -115,9 +182,9 @@ public class Ex1 {
 	 */
 	public static double sameValue(double[] p1, double[] p2, double x1, double x2, double eps) {
 		double ans = x1;
-        /** add you code below
+        /// add you code below
 
-         /////////////////// */
+         ////////////////////
 		return ans;
 	}
 	/**
@@ -134,9 +201,10 @@ public class Ex1 {
 	 */
 	public static double length(double[] p, double x1, double x2, int numberOfSegments) {
 		double ans = x1;
-        /** add you code below
+        ///add you code below
 
-         /////////////////// */
+
+         ////////////////////
 		return ans;
 	}
 	
@@ -181,9 +249,29 @@ public class Ex1 {
 	 */
 	public static double[] add(double[] p1, double[] p2) {
 		double [] ans = ZERO;//
-        /** add you code below
+        ///add you code below
+        if (p1 != null && p2 != null) {
 
-         /////////////////// */
+            int n = Math.max(p1.length, p2.length);
+            ans = new double[n];
+
+            for (int i = 0; i < n; i++) {
+
+                double a = 0;
+                double b = 0;
+
+                if (i < p1.length) {
+                    a = p1[i];
+                }
+                if (i < p2.length) {
+                    b = p2[i];
+                }
+
+                ans[i] = a + b;
+            }
+        }
+
+         /////////////////// /
 		return ans;
 	}
 	/**
@@ -206,7 +294,14 @@ public class Ex1 {
 	 */
 	public static double[] derivative (double[] po) {
 		double [] ans = ZERO;//
-        /** add you code below
+        /// add you code below/
+        if(po!=null&&po.length>1){
+            int len = po.length;
+            ans = new double[len-1];
+            for(int i=0;i< ans.length;i++){
+                ans[i] = po[i+1] * (i+1);
+            }
+        }
 
          /////////////////// */
 		return ans;
