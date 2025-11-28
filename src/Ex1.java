@@ -111,18 +111,11 @@ public class Ex1 {
         int len1 = p1.length - 1;
         int len2 = p2.length - 1;
         int n = Math.max(len1 ,len2);
+
         for (int i=0; i<=n ;i++) {
             double x = i;
-
-            double v1 = 0;
-            for (int j = 0; j < p1.length; j++) {
-                v1 += p1[j] * Math.pow(x, j);
-            }
-
-            double v2 = 0;
-            for (int j = 0; j < p2.length; j++) {
-                v2 += p2[j] * Math.pow(x, j);
-            }
+            double v1 = f(p1, x);
+            double v2 = f(p2, x);
 
             if (Math.abs(v1 - v2) > EPS) {
                 ans= false;
@@ -184,9 +177,31 @@ public class Ex1 {
 		double ans = x1;
         /// add you code below
 
+        // g1 = p1(x1) - p2(x1)
+        double g1 = f(p1, x1) - f(p2, x1);
+
+        // נקודת אמצע
+        double xm = (x1 + x2) / 2.0;
+
+        // gm = p1(xm) - p2(xm)
+        double gm = f(p1, xm) - f(p2, xm);
+
+        // אם הפונקציות כמעט שוות בנקודה xm → זה הפתרון
+        if (Math.abs(gm) < eps) {
+            return xm;
+        }
+
+        // מחליטים באיזה חצי טווח להמשיך לפי שינוי סימן (כמו ב-root_rec)
+        if (g1 * gm <= 0) {
+            // השורש בין x1 ל-xm
+            return sameValue(p1, p2, x1, xm, eps);
+        } else {
+            // השורש בין xm ל-x2
+            return sameValue(p1, p2, xm, x2, eps);
+        }
+    }
          ////////////////////
-		return ans;
-	}
+
 	/**
 	 * Given a polynomial function (p), a range [x1,x2] and an integer with the number (n) of sample points.
 	 * This function computes an approximation of the length of the function between f(x1) and f(x2) 
@@ -200,13 +215,37 @@ public class Ex1 {
 	 * @return the length approximation of the function between f(x1) and f(x2).
 	 */
 	public static double length(double[] p, double x1, double x2, int numberOfSegments) {
-		double ans = x1;
         ///add you code below
+        if (x1 > x2) {
+            double temp = x1;
+            x1 = x2;
+            x2 = temp;
+        }
+            double h = (x2 - x1) / numberOfSegments;
+            double ans = 0.0;
 
+            double xPrev = x1;
+            double yPrev = f(p, xPrev);
 
+            for (int i = 1; i <= numberOfSegments; i++) {
+                double xCurr = x1 + i * h;
+                double yCurr = f(p, xCurr);
+
+                double xd = xCurr - xPrev;
+                double yd = yCurr - yPrev;
+
+                double dis = Math.sqrt(xd * xd + yd * yd);
+
+                ans += dis;
+
+                xPrev = xCurr;
+                yPrev = yCurr;
+            }
+            return ans;
+        }
          ////////////////////
-		return ans;
-	}
+
+
 	
 	/**
 	 * Given two polynomial functions (p1,p2), a range [x1,x2] and an integer representing the number of Trapezoids between the functions (number of samples in on each polynom).
@@ -282,8 +321,17 @@ public class Ex1 {
 	 */
 	public static double[] mul(double[] p1, double[] p2) {
 		double [] ans = ZERO;//
-        /** add you code below
+        /// add you code below
+        if (p1 != null && p2 != null) {
+        int n = p1.length+ p2.length-1;
+        ans = new double[n];
 
+        for(int i=0; i<p1.length;i++){
+            for(int j=0;j<p2.length;j++){
+                ans[i+j] = ans[i+j] + (p1[i]*p2[j]);
+            }
+        }
+        }
          /////////////////// */
 		return ans;
 	}
