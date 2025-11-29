@@ -174,9 +174,7 @@ public class Ex1 {
 	 * @return an x value (x1<=x<=x2) for which |p1(x) - p2(x)| < eps.
 	 */
 	public static double sameValue(double[] p1, double[] p2, double x1, double x2, double eps) {
-		double ans = x1;
         /// add you code below
-
         // g1 = p1(x1) - p2(x1)
         double g1 = f(p1, x1) - f(p2, x1);
 
@@ -200,7 +198,7 @@ public class Ex1 {
             return sameValue(p1, p2, xm, x2, eps);
         }
     }
-         ////////////////////
+    ////////////////////
 
 	/**
 	 * Given a polynomial function (p), a range [x1,x2] and an integer with the number (n) of sample points.
@@ -258,14 +256,41 @@ public class Ex1 {
 	 * @param numberOfTrapezoid - a natural number representing the number of Trapezoids between x1 and x2.
 	 * @return the approximated area between the two polynomial functions within the [x1,x2] range.
 	 */
-	public static double area(double[] p1,double[]p2, double x1, double x2, int numberOfTrapezoid) {
-		double ans = 0;
-        /** add you code below
+     public static double area(double[] p1,double[]p2, double x1, double x2, int numberOfTrapezoid) {
+		double ans = 0.0;
+        ///add you code below
+         if (x1 > x2) {
+         double temp = x1;
+         x1 = x2;
+         x2 = temp;
+         }
+        int n = numberOfTrapezoid * 50;
+        double h = (x2 - x1) / n;
 
-         /////////////////// */
+        for (int i =0;i<n;i++){
+            double c1 = h * i + x1;
+            double c2 = h * (i+1) + x1;
+
+            double y1l = f(p1, c1);
+            double y2l = f(p2, c1);
+
+            double y1r = f(p1, c2);
+            double y2r = f(p2, c2);
+
+            double d1 = Math.abs(y1l-y2l);
+            double d2 = Math.abs(y1r-y2r);
+
+            double trp = (d1 + d2) * 0.5 * h;
+            ans += trp;
+
+        }
+
+
+         //////////////////////
 		return ans;
 	}
-	/**
+
+   	/**
 	 * This function computes the array representation of a polynomial function from a String
 	 * representation. Note:given a polynomial function represented as a double array,
 	 * getPolynomFromString(poly(p)) should return an array equals to p.
@@ -275,11 +300,103 @@ public class Ex1 {
 	 */
 	public static double[] getPolynomFromString(String p) {
 		double [] ans = ZERO;//  -1.0x^2 +3.0x +2.0
-        /** add you code below
+        /// add you code below
+         if (p == null) {
+         return ans;
+         }
 
-         /////////////////// */
-		return ans;
-	}
+        String s = p.replace(" ", "");
+
+        s = s.replace("-", "+-");
+
+        if (s.startsWith("+")) {
+            s = s.substring(1);
+        }
+
+        String[] parts = s.split("\\+");
+
+        // 4. מציאת החזקה המקסימלית
+        int maxPower = 0;
+
+        for (int i = 0; i < parts.length; i++) {
+            String t = parts[i];
+
+            if (!t.equals("")) {
+                int power = 0;
+
+                if (!t.contains("x")) {
+                    // קבוע → חזקה 0
+                    power = 0;
+                } else {
+                    // יש x
+                    if (t.contains("^")) {
+                        // לדוגמה: "-1.0x^2"
+                        String[] splitPower = t.split("\\^"); // ["-1.0x", "2"]
+                        if (splitPower.length > 1) {
+                            power = Integer.parseInt(splitPower[1]);
+                        } else {
+                            power = 1;
+                        }
+                    } else {
+                        // לדוגמה: "3x" או "-x"
+                        power = 1;
+                    }
+                }
+
+                if (power > maxPower) {
+                    maxPower = power;
+                }
+            }
+        }
+
+        // 5. יצירת המערך בגודל המתאים
+        ans = new double[maxPower + 1];
+
+        // 6. מילוי המקדמים במקומות הנכונים
+        for (int i = 0; i < parts.length; i++) {
+            String t = parts[i];
+
+            if (!t.equals("")) {
+                double coef = 0.0;
+                int power = 0;
+
+                if (!t.contains("x")) {
+                    // קבוע בלבד, למשל "2.0"
+                    coef = Double.parseDouble(t);
+                    power = 0;
+                } else {
+                    // יש x
+                    // חזקה
+                    if (t.contains("^")) {
+                        String[] splitPower = t.split("\\^"); // ["-1.0x", "2"]
+                        if (splitPower.length > 1) {
+                            power = Integer.parseInt(splitPower[1]);
+                        } else {
+                            power = 1;
+                        }
+                    } else {
+                        power = 1;
+                    }
+
+                    // מקדם
+                    String[] splitCoef = t.split("x"); // למשל: ["-1.0", "^2"] או ["3.0", ""]
+                    String coefStr = splitCoef[0];
+
+                    if (coefStr.equals("") || coefStr.equals("+")) {
+                        coef = 1.0;
+                    } else if (coefStr.equals("-")) {
+                        coef = -1.0;
+                    } else {
+                        coef = Double.parseDouble(coefStr);
+                    }
+                }
+
+                ans[power] += coef;
+            }
+        }
+
+        return ans;
+    }
 	/**
 	 * This function computes the polynomial function which is the sum of two polynomial functions (p1,p2)
 	 * @param p1
